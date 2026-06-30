@@ -1,0 +1,105 @@
+service: api-marketplace
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  memorySize: 256
+  timeout: 30
+  environment:
+    MIMO_API_KEY: ${env:MIMO_API_KEY}
+    OPENAI_API_KEY: ${env:OPENAI_API_KEY}
+    ANTHROPIC_API_KEY: ${env:ANTHROPIC_API_KEY}
+    JWT_SECRET: ${env:JWT_SECRET}
+    ALLOWED_ORIGINS: "*"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+          Resource: "*"
+
+functions:
+  auth:
+    handler: handlers/auth.handler
+    events:
+      - http:
+          path: /auth/{proxy+}
+          method: any
+          cors: true
+
+  api:
+    handler: handlers/api.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: any
+          cors: true
+      - http:
+          path: /
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-users
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: email-index
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    ApiKeysTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-api-keys
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: apiKey
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: apiKey
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: userId-index
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    UsageTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-usage
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: apiKey
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: S
+        KeySchema:
+          - AttributeName: apiKey
+            KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
+
+plugins:
+  - serverless-offline

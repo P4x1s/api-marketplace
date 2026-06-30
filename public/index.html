@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI API Marketplace - 出售你的API</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: white; text-align: center; margin-bottom: 30px; }
+        h2 { color: #333; margin-bottom: 16px; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 6px; color: #555; font-weight: 500; }
+        input, textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        input:focus, textarea:focus { outline: none; border-color: #667eea; }
+        button { background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; }
+        button:hover { background: #5a6fd6; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-secondary { background: #6c757d; }
+        .btn-success { background: #28a745; }
+        .btn-danger { background: #dc3545; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .stat { text-align: center; padding: 16px; background: #f8f9fa; border-radius: 8px; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #667eea; }
+        .stat-label { color: #666; font-size: 14px; }
+        .api-key { background: #f8f9fa; padding: 12px; border-radius: 6px; font-family: monospace; word-break: break-all; }
+        .hidden { display: none; }
+        .alert { padding: 12px; border-radius: 6px; margin-bottom: 16px; }
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-error { background: #f8d7da; color: #721c24; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+        .tab { padding: 8px 16px; background: #f8f9fa; border: none; border-radius: 6px; cursor: pointer; }
+        .tab.active { background: #667eea; color: white; }
+        pre { background: #f8f9fa; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 AI API Marketplace</h1>
+        
+        <!-- 未登录状态 -->
+        <div id="auth-section" class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('login')">登录</button>
+                <button class="tab" onclick="showTab('register')">注册</button>
+            </div>
+            
+            <div id="login-form">
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" id="login-email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="login-password" placeholder="••••••">
+                </div>
+                <button onclick="login()">登录</button>
+            </div>
+            
+            <div id="register-form" class="hidden">
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" id="register-email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="register-password" placeholder="••••••">
+                </div>
+                <div class="form-group">
+                    <label>名称</label>
+                    <input type="text" id="register-name" placeholder="Your Name">
+                </div>
+                <button onclick="register()">注册</button>
+            </div>
+            
+            <div id="auth-error" class="alert alert-error hidden"></div>
+        </div>
+
+        <!-- 已登录状态 -->
+        <div id="dashboard-section" class="hidden">
+            <!-- 用户信息 -->
+            <div class="card">
+                <h2>👋 欢迎, <span id="user-name"></span></h2>
+                <div class="grid">
+                    <div class="stat">
+                        <div class="stat-value" id="balance">$0.00</div>
+                        <div class="stat-label">余额</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="total-requests">0</div>
+                        <div class="stat-label">API调用次数</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 充值 -->
+            <div class="card">
+                <h2>💰 充值</h2>
+                <div class="form-group">
+                    <label>充值金额 ($)</label>
+                    <input type="number" id="topup-amount" min="1" value="10">
+                </div>
+                <button onclick="topup()" class="btn-success">充值</button>
+            </div>
+
+            <!-- API密钥 -->
+            <div class="card">
+                <h2>🔑 API密钥</h2>
+                <div id="api-keys-list"></div>
+                <div class="form-group">
+                    <input type="text" id="new-key-name" placeholder="密钥名称">
+                    <button onclick="createApiKey()" class="btn-secondary" style="margin-top: 8px;">创建新密钥</button>
+                </div>
+            </div>
+
+            <!-- API文档 -->
+            <div class="card">
+                <h2>📚 API使用文档</h2>
+                <p style="margin-bottom: 12px;">使用你的API密钥调用AI模型：</p>
+                <pre id="code-example"></pre>
+            </div>
+
+            <!-- 支持的模型 -->
+            <div class="card">
+                <h2>🤖 支持的模型</h2>
+                <div id="models-list"></div>
+            </div>
+
+            <button onclick="logout()" class="btn-danger" style="width: 100%;">退出登录</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://dcwmum8geb.execute-api.us-east-1.amazonaws.com/dev';
+        let token = localStorage.getItem('token');
+        let user = JSON.parse(localStorage.getItem('user') || '{}');
+        let apiKeys = [];
+
+        // 页面加载时检查登录状态
+        window.onload = function() {
+            if (token) {
+                showDashboard();
+            }
+        };
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'login') {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+            } else {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('register-form').classList.remove('hidden');
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    token = data.token;
+                    user = { userId: data.userId, email: data.email, balance: data.balance };
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('user', JSON.stringify(user));
+                    showDashboard();
+                }
+            } catch (err) {
+                showError('登录失败，请重试');
+            }
+        }
+
+        async function register() {
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const name = document.getElementById('register-name').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, name })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    token = data.token;
+                    user = { userId: data.userId, email: data.email };
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('user', JSON.stringify(user));
+                    showDashboard();
+                }
+            } catch (err) {
+                showError('注册失败，请重试');
+            }
+        }
+
+        function logout() {
+            token = null;
+            user = {};
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('dashboard-section').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            
+            document.getElementById('user-name').textContent = user.email || 'User';
+            document.getElementById('balance').textContent = `$${(user.balance || 0).toFixed(2)}`;
+            
+            loadApiKeys();
+            loadModels();
+            updateCodeExample();
+        }
+
+        async function topup() {
+            const amount = parseFloat(document.getElementById('topup-amount').value);
+            
+            try {
+                const response = await fetch(`${API_BASE}/topup`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ amount })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    user.balance = data.balance;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    document.getElementById('balance').textContent = `$${data.balance.toFixed(2)}`;
+                    alert('充值成功！');
+                }
+            } catch (err) {
+                alert('充值失败');
+            }
+        }
+
+        async function loadApiKeys() {
+            try {
+                const response = await fetch(`${API_BASE}/api-keys`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                apiKeys = data.apiKeys || [];
+                
+                const container = document.getElementById('api-keys-list');
+                if (apiKeys.length === 0) {
+                    container.innerHTML = '<p style="color: #666;">暂无API密钥</p>';
+                } else {
+                    container.innerHTML = apiKeys.map(key => `
+                        <div class="api-key" style="margin-bottom: 8px;">
+                            <strong>${key.name}</strong><br>
+                            <small>${key.apiKey}</small>
+                            <button onclick="deleteApiKey('${key.apiKey}')" class="btn-danger" style="float: right; padding: 4px 8px; font-size: 12px;">删除</button>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Failed to load API keys');
+            }
+        }
+
+        async function createApiKey() {
+            const name = document.getElementById('new-key-name').value || 'Default Key';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api-keys`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name })
+                });
+                
+                const data = await response.json();
+                if (data.apiKey) {
+                    loadApiKeys();
+                    document.getElementById('new-key-name').value = '';
+                    alert('API密钥创建成功！');
+                }
+            } catch (err) {
+                alert('创建失败');
+            }
+        }
+
+        async function deleteApiKey(apiKey) {
+            if (!confirm('确定删除此密钥？')) return;
+            
+            try {
+                await fetch(`${API_BASE}/api-keys/${apiKey}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                loadApiKeys();
+            } catch (err) {
+                alert('删除失败');
+            }
+        }
+
+        async function loadModels() {
+            try {
+                const response = await fetch(`${API_BASE}/models`);
+                const data = await response.json();
+                
+                const container = document.getElementById('models-list');
+                container.innerHTML = data.data.map(model => `
+                    <div style="padding: 8px; border-bottom: 1px solid #eee;">
+                        <strong>${model.id}</strong>
+                        <span style="color: #666; font-size: 12px;"> (${model.provider})</span>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Failed to load models');
+            }
+        }
+
+        function updateCodeExample() {
+            const apiKey = apiKeys.length > 0 ? apiKeys[0].apiKey : 'YOUR_API_KEY';
+            document.getElementById('code-example').textContent = `curl -X POST ${API_BASE}/chat/completions \\
+  -H "Authorization: Bearer ${token}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "mimo-v2.5",
+    "messages": [{"role": "user", "content": "Hello"}]
+  }'`;
+        }
+
+        function showError(message) {
+            const el = document.getElementById('auth-error');
+            el.textContent = message;
+            el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 3000);
+        }
+    </script>
+</body>
+</html>
