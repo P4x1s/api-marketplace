@@ -4,23 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aiko（艾柯）- 稳定快速的AI模型代理服务</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #10b981;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary: #0ea5e9;
+            --accent: #06b6d4;
             --dark: #0f172a;
-            --gray: #64748b;
-            --light: #f8fafc;
+            --text: #334155;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --bg-card: #ffffff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
-            color: #1e293b;
+            color: var(--text);
             line-height: 1.6;
+            background: var(--bg);
         }
         
         /* 导航栏 */
@@ -29,9 +38,9 @@
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #e2e8f0;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
             z-index: 1000;
             padding: 0 2rem;
         }
@@ -42,65 +51,69 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 70px;
+            height: 72px;
         }
         
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--primary);
+            color: var(--dark);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
         .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 18px;
+            font-size: 20px;
         }
         
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             align-items: center;
         }
         
         .nav-links a {
-            color: var(--gray);
+            color: var(--text-light);
             text-decoration: none;
             font-weight: 500;
+            font-size: 15px;
             transition: color 0.2s;
         }
         
         .nav-links a:hover { color: var(--primary); }
         
         .btn {
-            padding: 10px 24px;
-            border-radius: 8px;
+            padding: 12px 28px;
+            border-radius: 10px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
             cursor: pointer;
             border: none;
-            font-size: 14px;
+            font-size: 15px;
+            display: inline-block;
         }
         
         .btn-primary {
             background: var(--primary);
             color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
         }
         
         .btn-primary:hover {
             background: var(--primary-dark);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
         }
         
         .btn-outline {
@@ -117,13 +130,38 @@
         .btn-white {
             background: white;
             color: var(--primary);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+        }
+        
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
         
         /* Hero区域 */
         .hero {
-            padding: 140px 2rem 80px;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 160px 2rem 100px;
+            background: linear-gradient(180deg, #f0f7ff 0%, #e0f2fe 50%, #f0f9ff 100%);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
         }
         
         .hero h1 {
@@ -132,10 +170,11 @@
             color: var(--dark);
             margin-bottom: 1.5rem;
             line-height: 1.2;
+            letter-spacing: -0.02em;
         }
         
         .hero h1 span {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -143,22 +182,24 @@
         
         .hero p {
             font-size: 1.25rem;
-            color: var(--gray);
-            max-width: 600px;
-            margin: 0 auto 2rem;
+            color: var(--text-light);
+            max-width: 650px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
         }
         
         .hero-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
+            flex-wrap: wrap;
         }
         
         .hero-stats {
             display: flex;
             justify-content: center;
-            gap: 4rem;
-            margin-top: 4rem;
+            gap: 5rem;
+            margin-top: 5rem;
         }
         
         .stat-item {
@@ -166,19 +207,21 @@
         }
         
         .stat-number {
-            font-size: 2.5rem;
+            font-size: 2.75rem;
             font-weight: 700;
             color: var(--primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
         }
         
         .stat-label {
-            color: var(--gray);
-            font-size: 0.9rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
         }
         
         /* 特性区域 */
         .features {
-            padding: 100px 2rem;
+            padding: 120px 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -193,11 +236,14 @@
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 1rem;
+            letter-spacing: -0.01em;
         }
         
         .section-title p {
-            color: var(--gray);
+            color: var(--text-light);
             font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
         }
         
         .features-grid {
@@ -207,45 +253,47 @@
         }
         
         .feature-card {
-            background: white;
+            background: var(--bg-card);
             border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s;
+            padding: 2.5rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
         }
         
         .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border-color: var(--primary-light);
         }
         
         .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 12px;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 30px;
             margin-bottom: 1.5rem;
         }
         
         .feature-card h3 {
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 0.75rem;
             color: var(--dark);
         }
         
         .feature-card p {
-            color: var(--gray);
-            font-size: 0.95rem;
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.6;
         }
         
         /* 模型展示 */
         .models {
-            padding: 100px 2rem;
+            padding: 120px 2rem;
             background: var(--dark);
             color: white;
         }
@@ -264,91 +312,112 @@
         .model-card {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
+            border-radius: 14px;
+            padding: 2rem;
             text-align: center;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
         
         .model-card:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--primary);
+            background: rgba(255,255,255,0.08);
+            border-color: var(--primary-light);
+            transform: translateY(-4px);
         }
         
         .model-card .icon {
-            font-size: 2rem;
+            font-size: 2.5rem;
             margin-bottom: 1rem;
         }
         
         .model-card h4 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             margin-bottom: 0.5rem;
+            color: white;
         }
         
         .model-card .price {
-            color: var(--secondary);
+            color: var(--accent);
             font-weight: 600;
+            font-size: 0.95rem;
         }
         
         /* 定价 */
         .pricing {
-            padding: 100px 2rem;
-            background: #f8fafc;
+            padding: 120px 2rem;
+            background: var(--bg);
         }
         
         .pricing-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
         }
         
         .price-card {
-            background: white;
-            border-radius: 16px;
+            background: var(--bg-card);
+            border-radius: 20px;
             padding: 2.5rem;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--border);
             text-align: center;
             position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .price-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         }
         
         .price-card.popular {
             border-color: var(--primary);
             transform: scale(1.05);
+            box-shadow: 0 25px 50px rgba(37, 99, 235, 0.15);
+        }
+        
+        .price-card.popular:hover {
+            transform: scale(1.05) translateY(-4px);
         }
         
         .price-card.popular::before {
             content: '最受欢迎';
             position: absolute;
-            top: -12px;
+            top: -14px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
-            padding: 4px 16px;
+            padding: 6px 20px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
         }
         
         .price-card h3 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-bottom: 1rem;
             color: var(--dark);
         }
         
         .price-amount {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.5rem;
+            line-height: 1;
         }
         
         .price-amount span {
-            font-size: 1rem;
-            color: var(--gray);
+            font-size: 1.1rem;
+            color: var(--text-light);
             font-weight: 400;
+        }
+        
+        .price-desc {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
         }
         
         .price-features {
@@ -358,37 +427,40 @@
         }
         
         .price-features li {
-            padding: 0.5rem 0;
-            color: var(--gray);
+            padding: 0.6rem 0;
+            color: var(--text);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-size: 0.95rem;
         }
         
         .price-features li::before {
             content: '✓';
-            color: var(--secondary);
+            color: var(--success);
             font-weight: bold;
+            font-size: 1rem;
         }
         
         /* 代码示例 */
         .code-section {
-            padding: 100px 2rem;
+            padding: 120px 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
         
         .code-block {
             background: var(--dark);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 2rem;
             overflow-x: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
         
         .code-header {
             display: flex;
             gap: 8px;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         .code-dot {
@@ -405,18 +477,19 @@
             color: #e2e8f0;
             font-family: 'Monaco', 'Consolas', monospace;
             font-size: 14px;
-            line-height: 1.6;
+            line-height: 1.7;
         }
         
         .code-block .keyword { color: #c084fc; }
         .code-block .string { color: #86efac; }
         .code-block .comment { color: #64748b; }
+        .code-block .function { color: #60a5fa; }
         
         /* 页脚 */
         .footer {
             background: var(--dark);
             color: white;
-            padding: 60px 2rem 30px;
+            padding: 80px 2rem 40px;
         }
         
         .footer-content {
@@ -424,31 +497,34 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 3rem;
+            gap: 4rem;
         }
         
         .footer-brand h3 {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             margin-bottom: 1rem;
+            color: white;
         }
         
         .footer-brand p {
             color: #94a3b8;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
         }
         
         .footer-links h4 {
             font-size: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             color: white;
+            font-weight: 600;
         }
         
         .footer-links a {
             display: block;
             color: #94a3b8;
             text-decoration: none;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
             transition: color 0.2s;
         }
         
@@ -456,10 +532,12 @@
         
         .footer-bottom {
             max-width: 1200px;
-            margin: 3rem auto 0;
+            margin: 4rem auto 0;
             padding-top: 2rem;
             border-top: 1px solid rgba(255,255,255,0.1);
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             color: #64748b;
             font-size: 0.9rem;
         }
@@ -471,8 +549,11 @@
             .models-grid { grid-template-columns: repeat(2, 1fr); }
             .pricing-grid { grid-template-columns: 1fr; }
             .price-card.popular { transform: none; }
-            .footer-content { grid-template-columns: 1fr; }
+            .price-card.popular:hover { transform: translateY(-4px); }
+            .footer-content { grid-template-columns: 1fr; gap: 2rem; }
             .nav-links { display: none; }
+            .hero-stats { gap: 2rem; flex-wrap: wrap; }
+            .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
         }
         
         /* 隐藏页面 */
@@ -493,6 +574,10 @@
             margin-bottom: 2rem;
         }
         
+        .dashboard-header h1 {
+            color: var(--dark);
+        }
+        
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -501,29 +586,31 @@
         }
         
         .dash-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            border: 1px solid #e2e8f0;
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 1.75rem;
+            border: 1px solid var(--border);
         }
         
         .dash-card h4 {
-            color: var(--gray);
+            color: var(--text-light);
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
+            font-weight: 500;
         }
         
         .dash-card .value {
-            font-size: 2rem;
+            font-size: 2.25rem;
             font-weight: 700;
             color: var(--dark);
+            line-height: 1.2;
         }
         
         .dash-section {
-            background: white;
-            border-radius: 12px;
+            background: var(--bg-card);
+            border-radius: 14px;
             padding: 2rem;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border);
             margin-bottom: 2rem;
         }
         
@@ -543,20 +630,23 @@
             margin-bottom: 0.5rem;
             font-weight: 500;
             color: var(--dark);
+            font-size: 0.95rem;
         }
         
         .form-input {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.2s;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s;
+            background: var(--bg);
         }
         
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         
         /* 表格 */
@@ -566,23 +656,25 @@
         }
         
         .table th, .table td {
-            padding: 12px;
+            padding: 14px 16px;
             text-align: left;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--border);
         }
         
         .table th {
             font-weight: 600;
-            color: var(--gray);
+            color: var(--text-light);
             font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .badge {
             display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 4px 10px;
+            border-radius: 6px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
         }
         
         .badge-active { background: #dcfce7; color: #166534; }
@@ -594,44 +686,60 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
+            padding: 2rem;
         }
         
         .auth-card {
-            background: white;
-            border-radius: 16px;
+            background: var(--bg-card);
+            border-radius: 20px;
             padding: 3rem;
             width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.1);
         }
         
         .auth-card h2 {
             text-align: center;
             margin-bottom: 2rem;
             color: var(--dark);
+            font-size: 1.75rem;
         }
         
-        .auth-tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-light);
         }
         
-        .auth-tab {
-            flex: 1;
-            padding: 10px;
-            background: #f1f5f9;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
             font-weight: 500;
-            transition: all 0.2s;
         }
         
-        .auth-tab.active {
-            background: var(--primary);
-            color: white;
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 提示框 */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .alert-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        .alert-success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
         }
     </style>
 </head>
@@ -639,7 +747,7 @@
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="nav-container">
-        <a href="#" class="logo" onclick="showPage('home')">
+            <a href="#" class="logo" onclick="showPage('home')">
                 <div class="logo-icon">🤖</div>
                 Aiko
             </a>
@@ -658,24 +766,26 @@
     <div id="home" class="page active">
         <!-- Hero -->
         <section class="hero">
-            <h1>稳定快速的<br><span>AI模型代理服务</span></h1>
-            <p>一站式接入GPT-4、Claude、MiMo等主流AI模型，享受99.9%可用性和极速响应</p>
-            <div class="hero-buttons">
-                <a href="#" onclick="showPage('register')" class="btn btn-primary">免费开始</a>
-                <a href="#pricing" class="btn btn-outline">查看定价</a>
-            </div>
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <div class="stat-number">99.9%</div>
-                    <div class="stat-label">服务可用性</div>
+            <div class="hero-content">
+                <h1>稳定快速的<br><span>AI模型代理服务</span></h1>
+                <p>一站式接入GPT-4、Claude、MiMo等主流AI模型，享受99.9%可用性和极速响应</p>
+                <div class="hero-buttons">
+                    <a href="#" onclick="showPage('register')" class="btn btn-primary">免费开始</a>
+                    <a href="#pricing" class="btn btn-outline">查看定价</a>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">&lt;100ms</div>
-                    <div class="stat-label">平均响应时间</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">10M+</div>
-                    <div class="stat-label">日均请求量</div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">服务可用性</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">&lt;100ms</div>
+                        <div class="stat-label">平均响应时间</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">10M+</div>
+                        <div class="stat-label">日均请求量</div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -760,6 +870,7 @@
                 <div class="price-card">
                     <h3>入门版</h3>
                     <div class="price-amount">免费</div>
+                    <div class="price-desc">适合个人开发者试用</div>
                     <ul class="price-features">
                         <li>10,000 tokens/月</li>
                         <li>基础模型访问</li>
@@ -771,6 +882,7 @@
                 <div class="price-card popular">
                     <h3>专业版</h3>
                     <div class="price-amount">$29<span>/月</span></div>
+                    <div class="price-desc">适合专业开发者和小团队</div>
                     <ul class="price-features">
                         <li>500,000 tokens/月</li>
                         <li>所有模型访问</li>
@@ -783,6 +895,7 @@
                 <div class="price-card">
                     <h3>企业版</h3>
                     <div class="price-amount">定制</div>
+                    <div class="price-desc">适合大型企业和团队</div>
                     <ul class="price-features">
                         <li>无限 tokens</li>
                         <li>专属技术支持</li>
@@ -818,7 +931,7 @@ client = OpenAI(
     base_url=<span class="string">"https://api.aiko.com/v1"</span>
 )
 
-response = client.chat.completions.create(
+response = client.chat.completions.<span class="function">create</span>(
     model=<span class="string">"mimo-v2.5"</span>,
     messages=[
         {<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: <span class="string">"Hello!"</span>}
@@ -833,7 +946,7 @@ print(response.choices[0].message.content)</pre>
     <!-- 文档页 -->
     <div id="docs" class="page">
         <div style="padding: 100px 2rem 40px; max-width: 900px; margin: 0 auto;">
-            <h1 style="margin-bottom: 2rem;">API 文档</h1>
+            <h1 style="margin-bottom: 2rem; color: var(--dark);">API 文档</h1>
             
             <div class="dash-section">
                 <h3>快速开始</h3>
@@ -902,6 +1015,7 @@ print(response.choices[0].message.content)</pre>
         <div class="auth-page">
             <div class="auth-card">
                 <h2>登录 Aiko</h2>
+                <div id="login-error" class="alert alert-error" style="display: none;"></div>
                 <div class="form-group">
                     <label>邮箱</label>
                     <input type="email" class="form-input" id="login-email" placeholder="your@email.com">
@@ -911,8 +1025,8 @@ print(response.choices[0].message.content)</pre>
                     <input type="password" class="form-input" id="login-password" placeholder="••••••">
                 </div>
                 <button class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="login()">登录</button>
-                <p style="text-align: center; color: var(--gray);">
-                    还没有账号？<a href="#" onclick="showPage('register')" style="color: var(--primary);">免费注册</a>
+                <p class="auth-footer">
+                    还没有账号？<a href="#" onclick="showPage('register')">免费注册</a>
                 </p>
             </div>
         </div>
@@ -923,6 +1037,7 @@ print(response.choices[0].message.content)</pre>
         <div class="auth-page">
             <div class="auth-card">
                 <h2>注册 Aiko</h2>
+                <div id="register-error" class="alert alert-error" style="display: none;"></div>
                 <div class="form-group">
                     <label>邮箱</label>
                     <input type="email" class="form-input" id="register-email" placeholder="your@email.com">
@@ -936,8 +1051,8 @@ print(response.choices[0].message.content)</pre>
                     <input type="text" class="form-input" id="register-name" placeholder="Your Name">
                 </div>
                 <button class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="register()">创建账号</button>
-                <p style="text-align: center; color: var(--gray);">
-                    已有账号？<a href="#" onclick="showPage('login')" style="color: var(--primary);">立即登录</a>
+                <p class="auth-footer">
+                    已有账号？<a href="#" onclick="showPage('login')">立即登录</a>
                 </p>
             </div>
         </div>
@@ -996,7 +1111,7 @@ print(response.choices[0].message.content)</pre>
             <div class="dash-section">
                 <h3>使用统计</h3>
                 <div id="usage-stats">
-                    <p style="color: var(--gray);">暂无使用记录</p>
+                    <p style="color: var(--text-light);">暂无使用记录</p>
                 </div>
             </div>
         </div>
@@ -1006,7 +1121,7 @@ print(response.choices[0].message.content)</pre>
     <footer class="footer" id="footer">
         <div class="footer-content">
             <div class="footer-brand">
-                <h3>⚡ Aiko</h3>
+                <h3>🤖 Aiko</h3>
                 <p>稳定、快速、安全的AI模型代理服务。让您的AI应用无后顾之忧。</p>
             </div>
             <div class="footer-links">
@@ -1033,6 +1148,7 @@ print(response.choices[0].message.content)</pre>
         </div>
         <div class="footer-bottom">
             <p>© 2026 Aiko. All rights reserved.</p>
+            <p>Made with ❤️ by Aiko Team</p>
         </div>
     </footer>
 
@@ -1083,7 +1199,9 @@ print(response.choices[0].message.content)</pre>
                 const data = await response.json();
 
                 if (data.error) {
-                    alert(data.error);
+                    const errorEl = document.getElementById('register-error');
+                    errorEl.textContent = data.error;
+                    errorEl.style.display = 'block';
                 } else {
                     token = data.token;
                     user = { userId: data.userId, email: data.email };
@@ -1092,7 +1210,9 @@ print(response.choices[0].message.content)</pre>
                     showPage('dashboard');
                 }
             } catch (err) {
-                alert('注册失败，请重试');
+                const errorEl = document.getElementById('register-error');
+                errorEl.textContent = '注册失败，请重试';
+                errorEl.style.display = 'block';
             }
         }
 
@@ -1110,7 +1230,9 @@ print(response.choices[0].message.content)</pre>
                 const data = await response.json();
 
                 if (data.error) {
-                    alert(data.error);
+                    const errorEl = document.getElementById('login-error');
+                    errorEl.textContent = data.error;
+                    errorEl.style.display = 'block';
                 } else {
                     token = data.token;
                     user = { userId: data.userId, email: data.email, balance: data.balance };
@@ -1119,7 +1241,9 @@ print(response.choices[0].message.content)</pre>
                     showPage('dashboard');
                 }
             } catch (err) {
-                alert('登录失败，请重试');
+                const errorEl = document.getElementById('login-error');
+                errorEl.textContent = '登录失败，请重试';
+                errorEl.style.display = 'block';
             }
         }
 
@@ -1149,15 +1273,15 @@ print(response.choices[0].message.content)</pre>
 
                 const container = document.getElementById('api-keys-list');
                 if (keys.length === 0) {
-                    container.innerHTML = '<p style="color: var(--gray);">暂无API密钥</p>';
+                    container.innerHTML = '<p style="color: var(--text-light);">暂无API密钥</p>';
                 } else {
                     container.innerHTML = keys.map(key => `
-                        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="background: var(--bg); padding: 14px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);">
                             <div>
-                                <strong>${key.name}</strong>
-                                <div style="font-family: monospace; font-size: 12px; color: var(--gray); margin-top: 4px;">${key.apiKey}</div>
+                                <strong style="color: var(--dark);">${key.name}</strong>
+                                <div style="font-family: monospace; font-size: 13px; color: var(--text-light); margin-top: 4px;">${key.apiKey}</div>
                             </div>
-                            <button onclick="deleteApiKey('${key.apiKey}')" style="background: #fee2e2; color: #991b1b; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">删除</button>
+                            <button onclick="deleteApiKey('${key.apiKey}')" style="background: #fee2e2; color: #991b1b; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 500;">删除</button>
                         </div>
                     `).join('');
                 }
