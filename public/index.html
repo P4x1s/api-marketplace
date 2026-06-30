@@ -757,7 +757,7 @@
                 <a href="#pricing">定价</a>
                 <a href="#" onclick="showPage('docs')">文档</a>
                 <a href="#" onclick="showPage('login')" class="btn btn-outline">登录</a>
-                <a href="#" onclick="showPage('register')" class="btn btn-primary">免费试用</a>
+                <a href="#" onclick="showPage('register')" class="btn btn-primary" style="color: white; font-weight: 600;">免费试用</a>
             </div>
         </div>
     </nav>
@@ -1186,9 +1186,24 @@ print(response.choices[0].message.content)</pre>
 
         // 注册
         async function register() {
-            const email = document.getElementById('register-email').value;
+            const email = document.getElementById('register-email').value.trim();
             const password = document.getElementById('register-password').value;
-            const name = document.getElementById('register-name').value;
+            const name = document.getElementById('register-name').value.trim();
+
+            // 前端验证
+            if (!email || !password) {
+                const errorEl = document.getElementById('register-error');
+                errorEl.textContent = '请填写邮箱和密码';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (password.length < 8) {
+                const errorEl = document.getElementById('register-error');
+                errorEl.textContent = '密码长度至少8位';
+                errorEl.style.display = 'block';
+                return;
+            }
 
             try {
                 const response = await fetch(`${API_BASE}/auth/register`, {
@@ -1200,14 +1215,19 @@ print(response.choices[0].message.content)</pre>
 
                 if (data.error) {
                     const errorEl = document.getElementById('register-error');
-                    errorEl.textContent = data.error;
+                    errorEl.textContent = data.message || data.error;
                     errorEl.style.display = 'block';
                 } else {
-                    token = data.token;
-                    user = { userId: data.userId, email: data.email };
-                    localStorage.setItem('token', token);
-                    localStorage.setItem('user', JSON.stringify(user));
-                    showPage('dashboard');
+                    // 注册成功，显示提示
+                    const errorEl = document.getElementById('register-error');
+                    errorEl.className = 'alert alert-success';
+                    errorEl.textContent = '注册成功！请登录您的账号';
+                    errorEl.style.display = 'block';
+                    
+                    // 2秒后跳转到登录页
+                    setTimeout(() => {
+                        showPage('login');
+                    }, 2000);
                 }
             } catch (err) {
                 const errorEl = document.getElementById('register-error');
@@ -1218,8 +1238,16 @@ print(response.choices[0].message.content)</pre>
 
         // 登录
         async function login() {
-            const email = document.getElementById('login-email').value;
+            const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
+
+            // 前端验证
+            if (!email || !password) {
+                const errorEl = document.getElementById('login-error');
+                errorEl.textContent = '请填写邮箱和密码';
+                errorEl.style.display = 'block';
+                return;
+            }
 
             try {
                 const response = await fetch(`${API_BASE}/auth/login`, {
@@ -1231,11 +1259,11 @@ print(response.choices[0].message.content)</pre>
 
                 if (data.error) {
                     const errorEl = document.getElementById('login-error');
-                    errorEl.textContent = data.error;
+                    errorEl.textContent = data.message || data.error;
                     errorEl.style.display = 'block';
                 } else {
                     token = data.token;
-                    user = { userId: data.userId, email: data.email, balance: data.balance };
+                    user = data.user;
                     localStorage.setItem('token', token);
                     localStorage.setItem('user', JSON.stringify(user));
                     showPage('dashboard');

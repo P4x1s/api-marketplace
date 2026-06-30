@@ -14,7 +14,7 @@
         "MIMO_API_KEY": "tp-cmrdoq9qnnikurmk1mronehxkwgne6p51v6vkbvlzmzxwx5u",
         "OPENAI_API_KEY": "sk-placeholder",
         "ANTHROPIC_API_KEY": "sk-ant-placeholder",
-        "JWT_SECRET": "my-super-secret-jwt-key-2024",
+        "JWT_SECRET": "aiko-super-secret-jwt-key-2026-secure",
         "ALLOWED_ORIGINS": "*"
       },
       "iam": {
@@ -205,7 +205,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/api-marketplace/dev/1782788351101-2026-06-30T02:59:11.101Z/api-marketplace.zip"
+                "S3Key": "serverless/api-marketplace/dev/1782793314790-2026-06-30T04:21:54.790Z/api-marketplace.zip"
               },
               "Handler": "handlers/auth.handler",
               "Runtime": "nodejs18.x",
@@ -217,7 +217,7 @@
                   "MIMO_API_KEY": "tp-cmrdoq9qnnikurmk1mronehxkwgne6p51v6vkbvlzmzxwx5u",
                   "OPENAI_API_KEY": "sk-placeholder",
                   "ANTHROPIC_API_KEY": "sk-ant-placeholder",
-                  "JWT_SECRET": "my-super-secret-jwt-key-2024",
+                  "JWT_SECRET": "aiko-super-secret-jwt-key-2026-secure",
                   "ALLOWED_ORIGINS": "*"
                 }
               },
@@ -239,7 +239,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/api-marketplace/dev/1782788351101-2026-06-30T02:59:11.101Z/api-marketplace.zip"
+                "S3Key": "serverless/api-marketplace/dev/1782793314790-2026-06-30T04:21:54.790Z/api-marketplace.zip"
               },
               "Handler": "handlers/api.handler",
               "Runtime": "nodejs18.x",
@@ -251,7 +251,7 @@
                   "MIMO_API_KEY": "tp-cmrdoq9qnnikurmk1mronehxkwgne6p51v6vkbvlzmzxwx5u",
                   "OPENAI_API_KEY": "sk-placeholder",
                   "ANTHROPIC_API_KEY": "sk-ant-placeholder",
-                  "JWT_SECRET": "my-super-secret-jwt-key-2024",
+                  "JWT_SECRET": "aiko-super-secret-jwt-key-2026-secure",
                   "ALLOWED_ORIGINS": "*"
                 }
               },
@@ -266,24 +266,24 @@
               "ApiLogGroup"
             ]
           },
-          "AuthLambdaVersionBny7MVbqNjpi80yPMSKc3lpjhEYVMEufck1kNNGElc": {
+          "AuthLambdaVersionSzE08KwWY8Rq3Di5ZfbMitBhY0E3HgFw5gjiAcT5E": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "AuthLambdaFunction"
               },
-              "CodeSha256": "+FKLy2ULmnMs2QASANi/iNLrtqr3Pl4KybLQk3uuyTI="
+              "CodeSha256": "2dO4aqaMaANZebW7YC9vf4SZ4u6eJgbdBOKtQ3GjwgI="
             }
           },
-          "ApiLambdaVersionB13fQTcicXxumbpi567RH9WyVKmFpQ15lZJ3UbADlJQ": {
+          "ApiLambdaVersioniXkF5zsNVzRr9uEsJL6r1xT8460BeGaZMbNdmDqdeYs": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ApiLambdaFunction"
               },
-              "CodeSha256": "+FKLy2ULmnMs2QASANi/iNLrtqr3Pl4KybLQk3uuyTI="
+              "CodeSha256": "2dO4aqaMaANZebW7YC9vf4SZ4u6eJgbdBOKtQ3GjwgI="
             }
           },
           "ApiGatewayRestApi": {
@@ -619,7 +619,7 @@
               "ApiLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1782788346126": {
+          "ApiGatewayDeployment1782793308014": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -824,7 +824,7 @@
           "AuthLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "AuthLambdaVersionBny7MVbqNjpi80yPMSKc3lpjhEYVMEufck1kNNGElc"
+              "Ref": "AuthLambdaVersionSzE08KwWY8Rq3Di5ZfbMitBhY0E3HgFw5gjiAcT5E"
             },
             "Export": {
               "Name": "sls-api-marketplace-dev-AuthLambdaFunctionQualifiedArn"
@@ -833,7 +833,7 @@
           "ApiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ApiLambdaVersionB13fQTcicXxumbpi567RH9WyVKmFpQ15lZJ3UbADlJQ"
+              "Ref": "ApiLambdaVersioniXkF5zsNVzRr9uEsJL6r1xT8460BeGaZMbNdmDqdeYs"
             },
             "Export": {
               "Name": "sls-api-marketplace-dev-ApiLambdaFunctionQualifiedArn"
@@ -990,7 +990,7 @@
         "timeout": 30,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "AuthLambdaVersionBny7MVbqNjpi80yPMSKc3lpjhEYVMEufck1kNNGElc"
+        "versionLogicalId": "AuthLambdaVersionSzE08KwWY8Rq3Di5ZfbMitBhY0E3HgFw5gjiAcT5E"
       },
       "api": {
         "handler": "handlers/api.handler",
@@ -1050,7 +1050,7 @@
         "timeout": 30,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "ApiLambdaVersionB13fQTcicXxumbpi567RH9WyVKmFpQ15lZJ3UbADlJQ"
+        "versionLogicalId": "ApiLambdaVersioniXkF5zsNVzRr9uEsJL6r1xT8460BeGaZMbNdmDqdeYs"
       }
     },
     "resources": {
@@ -1181,7 +1181,7 @@
     "artifact": "D:\\Mimo\\api-marketplace\\.serverless\\api-marketplace.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/api-marketplace/dev/1782788351101-2026-06-30T02:59:11.101Z",
+    "artifactDirectoryName": "serverless/api-marketplace/dev/1782793314790-2026-06-30T04:21:54.790Z",
     "artifact": "api-marketplace.zip"
   }
 }
