@@ -3,240 +3,1186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI API Marketplace - 出售你的API</title>
+    <title>MiMoAPI - 稳定快速的AI模型代理服务</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light: #f8fafc;
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-        .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: white; text-align: center; margin-bottom: 30px; }
-        h2 { color: #333; margin-bottom: 16px; }
-        .form-group { margin-bottom: 16px; }
-        label { display: block; margin-bottom: 6px; color: #555; font-weight: 500; }
-        input, textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-        input:focus, textarea:focus { outline: none; border-color: #667eea; }
-        button { background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; }
-        button:hover { background: #5a6fd6; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-        .btn-secondary { background: #6c757d; }
-        .btn-success { background: #28a745; }
-        .btn-danger { background: #dc3545; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .stat { text-align: center; padding: 16px; background: #f8f9fa; border-radius: 8px; }
-        .stat-value { font-size: 24px; font-weight: bold; color: #667eea; }
-        .stat-label { color: #666; font-size: 14px; }
-        .api-key { background: #f8f9fa; padding: 12px; border-radius: 6px; font-family: monospace; word-break: break-all; }
-        .hidden { display: none; }
-        .alert { padding: 12px; border-radius: 6px; margin-bottom: 16px; }
-        .alert-success { background: #d4edda; color: #155724; }
-        .alert-error { background: #f8d7da; color: #721c24; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-        .tab { padding: 8px 16px; background: #f8f9fa; border: none; border-radius: 6px; cursor: pointer; }
-        .tab.active { background: #667eea; color: white; }
-        pre { background: #f8f9fa; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0;
+            z-index: 1000;
+            padding: 0 2rem;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover { color: var(--primary); }
+        
+        .btn {
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-white {
+            background: white;
+            color: var(--primary);
+        }
+        
+        /* Hero区域 */
+        .hero {
+            padding: 140px 2rem 80px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 4rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* 特性区域 */
+        .features {
+            padding: 100px 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        /* 模型展示 */
+        .models {
+            padding: 100px 2rem;
+            background: var(--dark);
+            color: white;
+        }
+        
+        .models .section-title h2 { color: white; }
+        .models .section-title p { color: #94a3b8; }
+        
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .model-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .model-card:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--primary);
+        }
+        
+        .model-card .icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .model-card h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .model-card .price {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        /* 定价 */
+        .pricing {
+            padding: 100px 2rem;
+            background: #f8fafc;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .price-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            border: 2px solid #e2e8f0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .price-card.popular {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .price-card.popular::before {
+            content: '最受欢迎';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .price-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .price-amount {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .price-amount span {
+            font-size: 1rem;
+            color: var(--gray);
+            font-weight: 400;
+        }
+        
+        .price-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        .price-features li {
+            padding: 0.5rem 0;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .price-features li::before {
+            content: '✓';
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        /* 代码示例 */
+        .code-section {
+            padding: 100px 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .code-block {
+            background: var(--dark);
+            border-radius: 12px;
+            padding: 2rem;
+            overflow-x: auto;
+        }
+        
+        .code-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .code-dot.red { background: #ef4444; }
+        .code-dot.yellow { background: #f59e0b; }
+        .code-dot.green { background: #10b981; }
+        
+        .code-block pre {
+            color: #e2e8f0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .code-block .keyword { color: #c084fc; }
+        .code-block .string { color: #86efac; }
+        .code-block .comment { color: #64748b; }
+        
+        /* 页脚 */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 2rem 30px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+        }
+        
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-brand p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .footer-links a {
+            display: block;
+            color: #94a3b8;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover { color: white; }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .models-grid { grid-template-columns: repeat(2, 1fr); }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .price-card.popular { transform: none; }
+            .footer-content { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+        
+        /* 隐藏页面 */
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        /* 仪表盘样式 */
+        .dashboard {
+            padding: 100px 2rem 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .dash-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .dash-card h4 {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dash-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .dash-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+        
+        .dash-section h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* 表格 */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th, .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .table th {
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-active { background: #dcfce7; color: #166534; }
+        .badge-inactive { background: #fee2e2; color: #991b1b; }
+        
+        /* 认证页面 */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .auth-card h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+        
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .auth-tab.active {
+            background: var(--primary);
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 AI API Marketplace</h1>
-        
-        <!-- 未登录状态 -->
-        <div id="auth-section" class="card">
-            <div class="tabs">
-                <button class="tab active" onclick="showTab('login')">登录</button>
-                <button class="tab" onclick="showTab('register')">注册</button>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="showPage('home')">
+                <div class="logo-icon">⚡</div>
+                MiMoAPI
+            </a>
+            <div class="nav-links">
+                <a href="#" onclick="showPage('home')">首页</a>
+                <a href="#features">特性</a>
+                <a href="#pricing">定价</a>
+                <a href="#" onclick="showPage('docs')">文档</a>
+                <a href="#" onclick="showPage('login')" class="btn btn-outline">登录</a>
+                <a href="#" onclick="showPage('register')" class="btn btn-primary">免费试用</a>
             </div>
+        </div>
+    </nav>
+
+    <!-- 首页 -->
+    <div id="home" class="page active">
+        <!-- Hero -->
+        <section class="hero">
+            <h1>稳定快速的<br><span>AI模型代理服务</span></h1>
+            <p>一站式接入GPT-4、Claude、MiMo等主流AI模型，享受99.9%可用性和极速响应</p>
+            <div class="hero-buttons">
+                <a href="#" onclick="showPage('register')" class="btn btn-primary">免费开始</a>
+                <a href="#pricing" class="btn btn-outline">查看定价</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">服务可用性</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">&lt;100ms</div>
+                    <div class="stat-label">平均响应时间</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10M+</div>
+                    <div class="stat-label">日均请求量</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 特性 -->
+        <section class="features" id="features">
+            <div class="section-title">
+                <h2>为什么选择 MiMoAPI</h2>
+                <p>我们提供最稳定、最快速的AI模型代理服务</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>极速响应</h3>
+                    <p>全球CDN节点，平均响应时间低于100ms，让您的应用飞速运行</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>自动故障转移</h3>
+                    <p>智能路由系统，当上游API故障时自动切换备用节点</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>企业级安全</h3>
+                    <p>端到端加密，API密钥安全存储，符合SOC2标准</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>实时监控</h3>
+                    <p>详细的用量统计、成本分析、性能监控仪表盘</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>OpenAI兼容</h3>
+                    <p>完全兼容OpenAI API格式，无需修改现有代码</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>按量付费</h3>
+                    <p>无需预付费，按实际使用量结算，用多少付多少</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 支持的模型 -->
+        <section class="models" id="models">
+            <div class="section-title">
+                <h2>支持的AI模型</h2>
+                <p>一站式接入所有主流AI模型</p>
+            </div>
+            <div class="models-grid">
+                <div class="model-card">
+                    <div class="icon">🤖</div>
+                    <h4>GPT-4</h4>
+                    <div class="price">$0.03/1K tokens</div>
+                </div>
+                <div class="model-card">
+                    <div class="icon">🧠</div>
+                    <h4>Claude 3.5</h4>
+                    <div class="price">$0.015/1K tokens</div>
+                </div>
+                <div class="model-card">
+                    <div class="icon">🎯</div>
+                    <h4>MiMo v2.5</h4>
+                    <div class="price">$0.002/1K tokens</div>
+                </div>
+                <div class="model-card">
+                    <div class="icon">⚡</div>
+                    <h4>GPT-3.5 Turbo</h4>
+                    <div class="price">$0.002/1K tokens</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 定价 -->
+        <section class="pricing" id="pricing">
+            <div class="section-title">
+                <h2>简单透明的定价</h2>
+                <p>按使用量付费，无隐藏费用</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h3>入门版</h3>
+                    <div class="price-amount">免费</div>
+                    <ul class="price-features">
+                        <li>10,000 tokens/月</li>
+                        <li>基础模型访问</li>
+                        <li>社区支持</li>
+                        <li>API密钥 1个</li>
+                    </ul>
+                    <a href="#" onclick="showPage('register')" class="btn btn-outline" style="width: 100%;">免费开始</a>
+                </div>
+                <div class="price-card popular">
+                    <h3>专业版</h3>
+                    <div class="price-amount">$29<span>/月</span></div>
+                    <ul class="price-features">
+                        <li>500,000 tokens/月</li>
+                        <li>所有模型访问</li>
+                        <li>优先支持</li>
+                        <li>API密钥 10个</li>
+                        <li>详细统计</li>
+                    </ul>
+                    <a href="#" onclick="showPage('register')" class="btn btn-primary" style="width: 100%;">立即订阅</a>
+                </div>
+                <div class="price-card">
+                    <h3>企业版</h3>
+                    <div class="price-amount">定制</div>
+                    <ul class="price-features">
+                        <li>无限 tokens</li>
+                        <li>专属技术支持</li>
+                        <li>SLA保障</li>
+                        <li>自定义部署</li>
+                        <li>发票结算</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline" style="width: 100%;">联系我们</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 代码示例 -->
+        <section class="code-section">
+            <div class="section-title">
+                <h2>5分钟快速开始</h2>
+                <p>完全兼容OpenAI SDK，即插即用</p>
+            </div>
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                </div>
+                <pre><span class="comment"># 安装 OpenAI SDK</span>
+pip install openai
+
+<span class="comment"># 使用 MiMoAPI</span>
+<span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI
+
+client = OpenAI(
+    api_key=<span class="string">"your-api-key"</span>,
+    base_url=<span class="string">"https://api.mimoapi.com/v1"</span>
+)
+
+response = client.chat.completions.create(
+    model=<span class="string">"mimo-v2.5"</span>,
+    messages=[
+        {<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: <span class="string">"Hello!"</span>}
+    ]
+)
+
+print(response.choices[0].message.content)</pre>
+            </div>
+        </section>
+    </div>
+
+    <!-- 文档页 -->
+    <div id="docs" class="page">
+        <div style="padding: 100px 2rem 40px; max-width: 900px; margin: 0 auto;">
+            <h1 style="margin-bottom: 2rem;">API 文档</h1>
             
-            <div id="login-form">
+            <div class="dash-section">
+                <h3>快速开始</h3>
+                <p style="margin-bottom: 1rem;">1. 注册账号并获取API密钥</p>
+                <p style="margin-bottom: 1rem;">2. 使用以下端点调用API：</p>
+                <div class="code-block" style="margin: 1rem 0;">
+                    <pre>POST https://dcwmum8geb.execute-api.us-east-1.amazonaws.com/dev/chat/completions</pre>
+                </div>
+                <p style="margin-bottom: 1rem;">3. 在请求头中添加认证：</p>
+                <div class="code-block" style="margin: 1rem 0;">
+                    <pre>Authorization: Bearer your-api-key</pre>
+                </div>
+            </div>
+
+            <div class="dash-section">
+                <h3>请求格式</h3>
+                <div class="code-block">
+                    <pre>{
+  "model": "mimo-v2.5",
+  "messages": [
+    {"role": "user", "content": "Hello!"}
+  ]
+}</pre>
+                </div>
+            </div>
+
+            <div class="dash-section">
+                <h3>支持的模型</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>模型</th>
+                            <th>描述</th>
+                            <th>价格</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>mimo-v2.5</td>
+                            <td>MiMo v2.5 基础模型</td>
+                            <td>$0.002/1K tokens</td>
+                        </tr>
+                        <tr>
+                            <td>mimo-v2.5-pro</td>
+                            <td>MiMo v2.5 Pro 高级模型</td>
+                            <td>$0.01/1K tokens</td>
+                        </tr>
+                        <tr>
+                            <td>gpt-4</td>
+                            <td>GPT-4</td>
+                            <td>$0.03/1K tokens</td>
+                        </tr>
+                        <tr>
+                            <td>gpt-3.5-turbo</td>
+                            <td>GPT-3.5 Turbo</td>
+                            <td>$0.002/1K tokens</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 登录页 -->
+    <div id="login" class="page">
+        <div class="auth-page">
+            <div class="auth-card">
+                <h2>登录 MiMoAPI</h2>
                 <div class="form-group">
                     <label>邮箱</label>
-                    <input type="email" id="login-email" placeholder="your@email.com">
+                    <input type="email" class="form-input" id="login-email" placeholder="your@email.com">
                 </div>
                 <div class="form-group">
                     <label>密码</label>
-                    <input type="password" id="login-password" placeholder="••••••">
+                    <input type="password" class="form-input" id="login-password" placeholder="••••••">
                 </div>
-                <button onclick="login()">登录</button>
+                <button class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="login()">登录</button>
+                <p style="text-align: center; color: var(--gray);">
+                    还没有账号？<a href="#" onclick="showPage('register')" style="color: var(--primary);">免费注册</a>
+                </p>
             </div>
-            
-            <div id="register-form" class="hidden">
+        </div>
+    </div>
+
+    <!-- 注册页 -->
+    <div id="register" class="page">
+        <div class="auth-page">
+            <div class="auth-card">
+                <h2>注册 MiMoAPI</h2>
                 <div class="form-group">
                     <label>邮箱</label>
-                    <input type="email" id="register-email" placeholder="your@email.com">
+                    <input type="email" class="form-input" id="register-email" placeholder="your@email.com">
                 </div>
                 <div class="form-group">
                     <label>密码</label>
-                    <input type="password" id="register-password" placeholder="••••••">
+                    <input type="password" class="form-input" id="register-password" placeholder="至少6位">
                 </div>
                 <div class="form-group">
                     <label>名称</label>
-                    <input type="text" id="register-name" placeholder="Your Name">
+                    <input type="text" class="form-input" id="register-name" placeholder="Your Name">
                 </div>
-                <button onclick="register()">注册</button>
+                <button class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="register()">创建账号</button>
+                <p style="text-align: center; color: var(--gray);">
+                    已有账号？<a href="#" onclick="showPage('login')" style="color: var(--primary);">立即登录</a>
+                </p>
             </div>
-            
-            <div id="auth-error" class="alert alert-error hidden"></div>
         </div>
+    </div>
 
-        <!-- 已登录状态 -->
-        <div id="dashboard-section" class="hidden">
-            <!-- 用户信息 -->
-            <div class="card">
-                <h2>👋 欢迎, <span id="user-name"></span></h2>
-                <div class="grid">
-                    <div class="stat">
-                        <div class="stat-value" id="balance">$0.00</div>
-                        <div class="stat-label">余额</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="total-requests">0</div>
-                        <div class="stat-label">API调用次数</div>
-                    </div>
+    <!-- 仪表盘 -->
+    <div id="dashboard" class="page">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h1>控制台</h1>
+                <button class="btn btn-outline" onclick="logout()">退出登录</button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <h4>账户余额</h4>
+                    <div class="value" id="dash-balance">$0.00</div>
+                </div>
+                <div class="dash-card">
+                    <h4>本月调用</h4>
+                    <div class="value" id="dash-requests">0</div>
+                </div>
+                <div class="dash-card">
+                    <h4>消耗 Tokens</h4>
+                    <div class="value" id="dash-tokens">0</div>
+                </div>
+                <div class="dash-card">
+                    <h4>API 密钥</h4>
+                    <div class="value" id="dash-keys">0</div>
                 </div>
             </div>
 
             <!-- 充值 -->
-            <div class="card">
-                <h2>💰 充值</h2>
-                <div class="form-group">
-                    <label>充值金额 ($)</label>
-                    <input type="number" id="topup-amount" min="1" value="10">
+            <div class="dash-section">
+                <h3>充值</h3>
+                <div style="display: flex; gap: 1rem; align-items: end;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label>金额 ($)</label>
+                        <input type="number" class="form-input" id="topup-amount" min="1" value="10">
+                    </div>
+                    <button class="btn btn-primary" onclick="topup()">充值</button>
                 </div>
-                <button onclick="topup()" class="btn-success">充值</button>
             </div>
 
             <!-- API密钥 -->
-            <div class="card">
-                <h2>🔑 API密钥</h2>
-                <div id="api-keys-list"></div>
-                <div class="form-group">
-                    <input type="text" id="new-key-name" placeholder="密钥名称">
-                    <button onclick="createApiKey()" class="btn-secondary" style="margin-top: 8px;">创建新密钥</button>
+            <div class="dash-section">
+                <h3>API 密钥</h3>
+                <div id="api-keys-list" style="margin-bottom: 1rem;"></div>
+                <div style="display: flex; gap: 1rem;">
+                    <input type="text" class="form-input" id="new-key-name" placeholder="密钥名称" style="flex: 1;">
+                    <button class="btn btn-outline" onclick="createApiKey()">创建密钥</button>
                 </div>
             </div>
 
-            <!-- API文档 -->
-            <div class="card">
-                <h2>📚 API使用文档</h2>
-                <p style="margin-bottom: 12px;">使用你的API密钥调用AI模型：</p>
-                <pre id="code-example"></pre>
+            <!-- 使用统计 -->
+            <div class="dash-section">
+                <h3>使用统计</h3>
+                <div id="usage-stats">
+                    <p style="color: var(--gray);">暂无使用记录</p>
+                </div>
             </div>
-
-            <!-- 支持的模型 -->
-            <div class="card">
-                <h2>🤖 支持的模型</h2>
-                <div id="models-list"></div>
-            </div>
-
-            <button onclick="logout()" class="btn-danger" style="width: 100%;">退出登录</button>
         </div>
     </div>
+
+    <!-- 页脚 -->
+    <footer class="footer" id="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>⚡ MiMoAPI</h3>
+                <p>稳定、快速、安全的AI模型代理服务。让您的AI应用无后顾之忧。</p>
+            </div>
+            <div class="footer-links">
+                <h4>产品</h4>
+                <a href="#">API文档</a>
+                <a href="#">定价</a>
+                <a href="#">状态页</a>
+                <a href="#">更新日志</a>
+            </div>
+            <div class="footer-links">
+                <h4>资源</h4>
+                <a href="#">博客</a>
+                <a href="#">教程</a>
+                <a href="#">社区</a>
+                <a href="#">GitHub</a>
+            </div>
+            <div class="footer-links">
+                <h4>公司</h4>
+                <a href="#">关于我们</a>
+                <a href="#">联系方式</a>
+                <a href="#">隐私政策</a>
+                <a href="#">服务条款</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 MiMoAPI. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script>
         const API_BASE = 'https://dcwmum8geb.execute-api.us-east-1.amazonaws.com/dev';
         let token = localStorage.getItem('token');
         let user = JSON.parse(localStorage.getItem('user') || '{}');
-        let apiKeys = [];
 
-        // 页面加载时检查登录状态
-        window.onload = function() {
-            if (token) {
-                showDashboard();
-            }
-        };
-
-        function showTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+        // 页面切换
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page).classList.add('active');
             
-            if (tab === 'login') {
-                document.getElementById('login-form').classList.remove('hidden');
-                document.getElementById('register-form').classList.add('hidden');
+            // 显示/隐藏页脚
+            const footer = document.getElementById('footer');
+            if (['login', 'register', 'dashboard'].includes(page)) {
+                footer.style.display = 'none';
             } else {
-                document.getElementById('login-form').classList.add('hidden');
-                document.getElementById('register-form').classList.remove('hidden');
+                footer.style.display = 'block';
             }
+
+            // 如果已登录且访问登录/注册页，跳转到仪表盘
+            if (token && ['login', 'register'].includes(page)) {
+                showPage('dashboard');
+                loadDashboard();
+            }
+
+            // 如果访问仪表盘，加载数据
+            if (page === 'dashboard' && token) {
+                loadDashboard();
+            }
+
+            window.scrollTo(0, 0);
         }
 
-        async function login() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            try {
-                const response = await fetch(`${API_BASE}/auth/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                
-                const data = await response.json();
-                
-                if (data.error) {
-                    showError(data.error);
-                } else {
-                    token = data.token;
-                    user = { userId: data.userId, email: data.email, balance: data.balance };
-                    localStorage.setItem('token', token);
-                    localStorage.setItem('user', JSON.stringify(user));
-                    showDashboard();
-                }
-            } catch (err) {
-                showError('登录失败，请重试');
-            }
-        }
-
+        // 注册
         async function register() {
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
             const name = document.getElementById('register-name').value;
-            
+
             try {
                 const response = await fetch(`${API_BASE}/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password, name })
                 });
-                
                 const data = await response.json();
-                
+
                 if (data.error) {
-                    showError(data.error);
+                    alert(data.error);
                 } else {
                     token = data.token;
                     user = { userId: data.userId, email: data.email };
                     localStorage.setItem('token', token);
                     localStorage.setItem('user', JSON.stringify(user));
-                    showDashboard();
+                    showPage('dashboard');
                 }
             } catch (err) {
-                showError('注册失败，请重试');
+                alert('注册失败，请重试');
             }
         }
 
+        // 登录
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    token = data.token;
+                    user = { userId: data.userId, email: data.email, balance: data.balance };
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('user', JSON.stringify(user));
+                    showPage('dashboard');
+                }
+            } catch (err) {
+                alert('登录失败，请重试');
+            }
+        }
+
+        // 退出
         function logout() {
             token = null;
             user = {};
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            document.getElementById('auth-section').classList.remove('hidden');
-            document.getElementById('dashboard-section').classList.add('hidden');
+            showPage('home');
         }
 
-        function showDashboard() {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('dashboard-section').classList.remove('hidden');
-            
-            document.getElementById('user-name').textContent = user.email || 'User';
-            document.getElementById('balance').textContent = `$${(user.balance || 0).toFixed(2)}`;
-            
-            loadApiKeys();
-            loadModels();
-            updateCodeExample();
+        // 加载仪表盘
+        async function loadDashboard() {
+            if (!token) return;
+
+            document.getElementById('dash-balance').textContent = `$${(user.balance || 0).toFixed(2)}`;
+
+            // 加载API密钥
+            try {
+                const response = await fetch(`${API_BASE}/api-keys`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                const keys = data.apiKeys || [];
+                document.getElementById('dash-keys').textContent = keys.length;
+
+                const container = document.getElementById('api-keys-list');
+                if (keys.length === 0) {
+                    container.innerHTML = '<p style="color: var(--gray);">暂无API密钥</p>';
+                } else {
+                    container.innerHTML = keys.map(key => `
+                        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>${key.name}</strong>
+                                <div style="font-family: monospace; font-size: 12px; color: var(--gray); margin-top: 4px;">${key.apiKey}</div>
+                            </div>
+                            <button onclick="deleteApiKey('${key.apiKey}')" style="background: #fee2e2; color: #991b1b; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">删除</button>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Failed to load API keys');
+            }
+
+            // 加载使用统计
+            try {
+                const response = await fetch(`${API_BASE}/usage`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                document.getElementById('dash-requests').textContent = data.requests || 0;
+                document.getElementById('dash-tokens').textContent = (data.totalTokens || 0).toLocaleString();
+            } catch (err) {
+                console.error('Failed to load usage');
+            }
         }
 
+        // 充值
         async function topup() {
             const amount = parseFloat(document.getElementById('topup-amount').value);
-            
+            if (!amount || amount <= 0) return;
+
             try {
                 const response = await fetch(`${API_BASE}/topup`, {
                     method: 'POST',
@@ -246,15 +1192,14 @@
                     },
                     body: JSON.stringify({ amount })
                 });
-                
                 const data = await response.json();
-                
+
                 if (data.error) {
                     alert(data.error);
                 } else {
                     user.balance = data.balance;
                     localStorage.setItem('user', JSON.stringify(user));
-                    document.getElementById('balance').textContent = `$${data.balance.toFixed(2)}`;
+                    document.getElementById('dash-balance').textContent = `$${data.balance.toFixed(2)}`;
                     alert('充值成功！');
                 }
             } catch (err) {
@@ -262,35 +1207,10 @@
             }
         }
 
-        async function loadApiKeys() {
-            try {
-                const response = await fetch(`${API_BASE}/api-keys`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const data = await response.json();
-                apiKeys = data.apiKeys || [];
-                
-                const container = document.getElementById('api-keys-list');
-                if (apiKeys.length === 0) {
-                    container.innerHTML = '<p style="color: #666;">暂无API密钥</p>';
-                } else {
-                    container.innerHTML = apiKeys.map(key => `
-                        <div class="api-key" style="margin-bottom: 8px;">
-                            <strong>${key.name}</strong><br>
-                            <small>${key.apiKey}</small>
-                            <button onclick="deleteApiKey('${key.apiKey}')" class="btn-danger" style="float: right; padding: 4px 8px; font-size: 12px;">删除</button>
-                        </div>
-                    `).join('');
-                }
-            } catch (err) {
-                console.error('Failed to load API keys');
-            }
-        }
-
+        // 创建API密钥
         async function createApiKey() {
-            const name = document.getElementById('new-key-name').value || 'Default Key';
-            
+            const name = document.getElementById('new-key-name').value || '默认密钥';
+
             try {
                 const response = await fetch(`${API_BASE}/api-keys`, {
                     method: 'POST',
@@ -300,65 +1220,35 @@
                     },
                     body: JSON.stringify({ name })
                 });
-                
                 const data = await response.json();
+
                 if (data.apiKey) {
-                    loadApiKeys();
+                    loadDashboard();
                     document.getElementById('new-key-name').value = '';
-                    alert('API密钥创建成功！');
                 }
             } catch (err) {
                 alert('创建失败');
             }
         }
 
+        // 删除API密钥
         async function deleteApiKey(apiKey) {
             if (!confirm('确定删除此密钥？')) return;
-            
+
             try {
                 await fetch(`${API_BASE}/api-keys/${apiKey}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                loadApiKeys();
+                loadDashboard();
             } catch (err) {
                 alert('删除失败');
             }
         }
 
-        async function loadModels() {
-            try {
-                const response = await fetch(`${API_BASE}/models`);
-                const data = await response.json();
-                
-                const container = document.getElementById('models-list');
-                container.innerHTML = data.data.map(model => `
-                    <div style="padding: 8px; border-bottom: 1px solid #eee;">
-                        <strong>${model.id}</strong>
-                        <span style="color: #666; font-size: 12px;"> (${model.provider})</span>
-                    </div>
-                `).join('');
-            } catch (err) {
-                console.error('Failed to load models');
-            }
-        }
-
-        function updateCodeExample() {
-            const apiKey = apiKeys.length > 0 ? apiKeys[0].apiKey : 'YOUR_API_KEY';
-            document.getElementById('code-example').textContent = `curl -X POST ${API_BASE}/chat/completions \\
-  -H "Authorization: Bearer ${token}" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "model": "mimo-v2.5",
-    "messages": [{"role": "user", "content": "Hello"}]
-  }'`;
-        }
-
-        function showError(message) {
-            const el = document.getElementById('auth-error');
-            el.textContent = message;
-            el.classList.remove('hidden');
-            setTimeout(() => el.classList.add('hidden'), 3000);
+        // 初始化
+        if (token) {
+            showPage('dashboard');
         }
     </script>
 </body>
