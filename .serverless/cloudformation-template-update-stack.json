@@ -175,7 +175,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/api-marketplace/dev/1782793314790-2026-06-30T04:21:54.790Z/api-marketplace.zip"
+          "S3Key": "serverless/api-marketplace/dev/1782793985403-2026-06-30T04:33:05.403Z/api-marketplace.zip"
         },
         "Handler": "handlers/auth.handler",
         "Runtime": "nodejs18.x",
@@ -209,7 +209,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/api-marketplace/dev/1782793314790-2026-06-30T04:21:54.790Z/api-marketplace.zip"
+          "S3Key": "serverless/api-marketplace/dev/1782793985403-2026-06-30T04:33:05.403Z/api-marketplace.zip"
         },
         "Handler": "handlers/api.handler",
         "Runtime": "nodejs18.x",
@@ -236,24 +236,24 @@
         "ApiLogGroup"
       ]
     },
-    "AuthLambdaVersionSzE08KwWY8Rq3Di5ZfbMitBhY0E3HgFw5gjiAcT5E": {
+    "AuthLambdaVersionHbgLyGGd5AgxPOjIGktmV5vtQA3ordInfsFuXL7FrM": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "AuthLambdaFunction"
         },
-        "CodeSha256": "2dO4aqaMaANZebW7YC9vf4SZ4u6eJgbdBOKtQ3GjwgI="
+        "CodeSha256": "gSOIv+uhO51ZzZ+v2eWH1YqeE7wkCB4UoGHQwXTvmCk="
       }
     },
-    "ApiLambdaVersioniXkF5zsNVzRr9uEsJL6r1xT8460BeGaZMbNdmDqdeYs": {
+    "ApiLambdaVersionGszUut0gweqz0SG1rdX1S4bKIX2AleClzpIFFxp0": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ApiLambdaFunction"
         },
-        "CodeSha256": "2dO4aqaMaANZebW7YC9vf4SZ4u6eJgbdBOKtQ3GjwgI="
+        "CodeSha256": "gSOIv+uhO51ZzZ+v2eWH1YqeE7wkCB4UoGHQwXTvmCk="
       }
     },
     "ApiGatewayRestApi": {
@@ -589,7 +589,7 @@
         "ApiLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1782793308014": {
+    "ApiGatewayDeployment1782793979906": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -794,7 +794,7 @@
     "AuthLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "AuthLambdaVersionSzE08KwWY8Rq3Di5ZfbMitBhY0E3HgFw5gjiAcT5E"
+        "Ref": "AuthLambdaVersionHbgLyGGd5AgxPOjIGktmV5vtQA3ordInfsFuXL7FrM"
       },
       "Export": {
         "Name": "sls-api-marketplace-dev-AuthLambdaFunctionQualifiedArn"
@@ -803,7 +803,7 @@
     "ApiLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ApiLambdaVersioniXkF5zsNVzRr9uEsJL6r1xT8460BeGaZMbNdmDqdeYs"
+        "Ref": "ApiLambdaVersionGszUut0gweqz0SG1rdX1S4bKIX2AleClzpIFFxp0"
       },
       "Export": {
         "Name": "sls-api-marketplace-dev-ApiLambdaFunctionQualifiedArn"
